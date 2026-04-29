@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Circolo - Construyendo confianza global (17 Slides A4)</title>
+    <title>Análisis de la Industria: Stablecoins, Crossborder y RWA</title>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Plugin para etiquetas de datos en Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        /* 1. SETUP & PDF EXPORT OPTIMIZATION */
+        /* CONFIGURACIÓN Y OPTIMIZACIÓN PARA EXPORTACIÓN PDF */
         * { box-sizing: border-box; }
 
         body {
@@ -26,10 +28,9 @@
             min-height: 100vh;
         }
 
-        /* A4 Landscape Print Settings */
         @media print {
             @page { 
-                size: A4 landscape; /* 297mm x 210mm */
+                size: A4 landscape;
                 margin: 0; 
             }
             body { 
@@ -44,10 +45,10 @@
                 page-break-inside: avoid; 
                 box-shadow: none !important; 
                 border: none !important; 
+                margin: 0 !important;
             }
         }
 
-        /* Slide Container (A4 Pixel Equivalent at 96 DPI: 1123px x 794px) */
         .slide-container {
             align-items: center;
             background-color: #ffffff;
@@ -64,7 +65,6 @@
             border: 1px solid #e5e7eb;
         }
 
-        /* Orange Top Border Accent */
         .slide-container::before {
             content: '';
             position: absolute;
@@ -72,420 +72,470 @@
             right: 0;
             width: 250px;
             height: 8px;
-            background-color: #ff8c00;
+            background-color: #374151;
             z-index: 0;
         }
 
         .slide-container > * { position: relative; z-index: 1; width: 100%; }
 
-        /* 2. TYPOGRAPHY & COLORS */
         h1, h2, h3, h4 { color: #111827; font-weight: 800; margin: 0; letter-spacing: -0.02em; }
         p, li { color: #4b5563; font-size: 20px; line-height: 1.5; margin-bottom: 15px; }
         
-        h1 { font-size: 70px; line-height: 1.1; margin-bottom: 20px; }
-        .slide-title { font-size: 42px; margin-bottom: 40px; text-align: left; }
+        h1 { font-size: 54px; line-height: 1.1; margin-bottom: 30px; }
+        .slide-title { font-size: 38px; margin-bottom: 40px; text-align: left; border-left: 8px solid #ff8c00; padding-left: 20px; }
         h3 { font-size: 28px; font-weight: 700; margin-bottom: 15px; }
-        .subtitle { font-size: 24px; font-weight: 400; margin: 20px 0; }
-
+        
         .text-orange { color: #ff8c00; }
-        .bg-orange { background-color: #ff8c00; }
-        .text-dark { color: #111827; }
-
-        /* Layouts */
         .content-area { display: flex; flex-direction: column; flex-grow: 1; justify-content: center; }
-        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
-        .two-column.tiled { align-items: stretch; gap: 40px; }
-        .two-column.tiled > div { background-color: #f9fafb; border-radius: 12px; border: 1px solid #e5e7eb; padding: 40px; }
         
-        ul { list-style: none; margin: 0; padding: 0; }
-        li { position: relative; padding-left: 28px; margin-bottom: 18px; }
-        li::before { content: '\f054'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: 0; top: 4px; color: #ff8c00; font-size: 14px; }
-
-        /* Canvas Wrappers */
-        .canvas-wrapper { position: relative; width: 100%; height: 400px; display: flex; justify-content: center; align-items: center; }
-        .canvas-wrapper.small { height: 320px; }
+        .canvas-wrapper { position: relative; width: 100%; height: 420px; display: flex; justify-content: center; align-items: center; }
         
-        /* Pills & Tags */
-        .pill { background-color: #fff7ed; color: #ea580c; padding: 8px 18px; border-radius: 50px; font-size: 16px; font-weight: 700; display: inline-block; margin-bottom: 20px; border: 1px solid #fed7aa; }
-        .source-text { font-size: 14px; color: #9ca3af; margin-top: 20px; text-align: left; }
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
 
-        /* Highlight Numbers */
-        .number-highlight { color: #ff8c00; font-size: 110px; font-weight: 800; line-height: 1; letter-spacing: -0.05em; }
-        .number-label { color: #111827; font-size: 22px; font-weight: 700; margin-top: 10px; }
+        /* Temas Portada */
+        .topics-grid {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .topic-item {
+            background: #f9fafb;
+            padding: 15px 30px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            font-weight: 700;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .topic-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #ff8c00;
+            border-radius: 50%;
+        }
 
-        /* Logos Grid */
-        .logos-grid { display: flex; gap: 40px; justify-content: center; align-items: center; margin-top: 40px; }
-        .logo-circle { width: 140px; height: 140px; border-radius: 50%; background-color: white; border: 2px solid #e5e7eb; display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: 800; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-        .logo-circle.revolut { color: #000; }
-        .logo-circle.nu { color: #8a05be; }
-        .logo-circle.wenia { color: #00e0ff; }
+        /* Estilos perfil */
+        .profile-grid { display: grid; grid-template-columns: 400px 1fr; gap: 50px; align-items: center; }
+        .profile-photo { width: 100%; aspect-ratio: 1/1; border-radius: 24px; object-fit: cover; border: 4px solid #f3f4f6; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .profile-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; }
+        .stat-card { background: #f9fafb; padding: 15px; border-radius: 12px; border-left: 4px solid #ff8c00; }
+        .stat-card strong { display: block; font-size: 16px; color: #111827; }
+        .stat-card span { font-size: 14px; color: #6b7280; }
+
+        /* Logos */
+        .bank-logos-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .bank-card {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s ease;
+        }
+        .bank-icon-placeholder {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: white;
+            flex-shrink: 0;
+            font-size: 14px;
+        }
+
+        .cb-card {
+            background: #f9fafb;
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .cb-card h4 { color: #ff8c00; font-size: 24px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .cb-card ul { padding-left: 20px; margin: 0; flex-grow: 1; }
+        .cb-card li { font-size: 16px; margin-bottom: 8px; color: #374151; }
+        .cb-tag { font-size: 14px; font-weight: 800; text-transform: uppercase; color: #9ca3af; margin-bottom: 5px; display: block; }
+
+        .quote-box {
+            background: #fff7ed;
+            border-left: 5px solid #ff8c00;
+            padding: 25px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .quote-text {
+            font-size: 22px;
+            line-height: 1.4;
+            color: #111827;
+            font-weight: 500;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
 
-<!-- Slide 1: Portada -->
-<div class="slide-container" id="slide1">
-    <div class="content-area" style="justify-content: center;">
-        <div class="pill">Cifras 2024 - 2026</div>
-        <h1>Construyendo<br>confianza <span class="text-orange">global</span></h1>
-        <p class="subtitle" style="max-width: 700px;">El papel de las stablecoins en la nueva economía digital.<br>Evolución de usuarios y el auge de los activos del mundo real (RWA).</p>
-        <div style="margin-top: 60px; border-left: 5px solid #ff8c00; padding-left: 20px;">
-            <p style="margin: 0; font-weight: 800; color: #111827; font-size: 24px;">Camilo Romero</p>
-            <p style="margin: 0; font-size: 18px;">Circolo</p>
+<!-- Diapositiva 1: Portada -->
+<div class="slide-container">
+    <div class="content-area">
+        <h1>Análisis Global de la Industria de<br><span class="text-orange">Activos Digitales</span></h1>
+        
+        <p style="font-size: 22px; color: #6b7280; font-weight: 500; margin-bottom: 10px;">Temas principales:</p>
+        <div class="topics-grid">
+            <div class="topic-item"><div class="topic-dot"></div> Stablecoin</div>
+            <div class="topic-item"><div class="topic-dot"></div> Crossborder</div>
+            <div class="topic-item"><div class="topic-dot"></div> RWA</div>
         </div>
     </div>
 </div>
 
-<!-- Slide 2: Contexto 1 -->
-<div class="slide-container" id="slide2">
-    <h2 class="slide-title">La era de las finanzas instantáneas</h2>
+<!-- Diapositiva 2: Perfil Camilo Romero -->
+<div class="slide-container">
     <div class="content-area">
-        <h3 style="font-size: 42px; color: #ff8c00; margin-bottom: 30px; font-weight: 300;">Estamos viviendo la era de las finanzas instantáneas.</h3>
-        <p style="font-size: 28px; max-width: 800px; line-height: 1.4;">Donde ahora, más que nunca, las empresas y sus consumidores esperan pagos en minutos, no en días.</p>
-    </div>
-</div>
-
-<!-- Slide 3: Contexto 2 (Competidores) -->
-<div class="slide-container" id="slide3">
-    <h2 class="slide-title">El sistema financiero tradicional</h2>
-    <div class="content-area" style="text-align: center; align-items: center;">
-        <p style="font-size: 28px; margin-bottom: 50px; font-weight: 600;">Es lento, caro y burocrático.</p>
-        <div style="background-color: #f9fafb; border-radius: 16px; padding: 40px; border: 1px solid #e5e7eb; width: 100%;">
-            <p style="font-size: 24px; color: #111827; font-weight: 700;">Las entidades financieras que no se adapten, verán cómo sus clientes internacionales se van con competidores más rápidos y eficientes.</p>
-            <div class="logos-grid">
-                <div class="logo-circle revolut">Revolut</div>
-                <div class="logo-circle nu">Nu</div>
-                <div class="logo-circle wenia">Wenia</div>
-                <div class="logo-circle" style="color: #ff8c00;">Lulo</div>
+        <div class="profile-grid">
+            <img src="https://media.licdn.com/dms/image/v2/D4E03AQF9eTSy1tM3-Q/profile-displayphoto-crop_800_800/B4EZfXi62rGcAI-/0/1751667949450?e=1779321600&v=beta&t=ggMnOtJYWmwU027gRmGRfRK7fs8Hp2IcbNcNF_75bYE" alt="Camilo Romero" class="profile-photo">
+            <div>
+                <h2 style="font-size: 48px; margin-bottom: 5px;">Camilo Romero</h2>
+                <p class="text-orange" style="font-weight: 700; font-size: 22px; margin-bottom: 25px;">Business Development Leader | Stablecoin, Crossborder y RWA</p>
+                <p style="font-size: 18px; line-height: 1.6;">Líder estratégico con más de 15 años de experiencia en expansión regional y alianzas con empresas AAA, bancos y fintechs en LATAM. Especialista en conectar las finanzas tradicionales con infraestructuras blockchain de alto impacto.</p>
+                
+                <div class="profile-stats">
+                    <div class="stat-card">
+                        <strong>+15 Años</strong>
+                        <span>Liderazgo comercial en América Latina.</span>
+                    </div>
+                    <div class="stat-card">
+                        <strong>Ecosistema RWA</strong>
+                        <span>5 años impulsando activos reales on-chain.</span>
+                    </div>
+                    <div class="stat-card">
+                        <strong>Crossborder B2B</strong>
+                        <span>Eficiencia en pagos transfronterizos.</span>
+                    </div>
+                    <div class="stat-card">
+                        <strong>Stablecoins</strong>
+                        <span>Adopción e infraestructura estratégica.</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Slide 4: Cuota de Mercado 2024 -->
-<div class="slide-container" id="slide4">
-    <h2 class="slide-title">Cuota de Mercado (2024)</h2>
+<!-- Diapositiva 3: Crecimiento del Mercado de Stablecoins -->
+<div class="slide-container">
+    <h2 class="slide-title">Crecimiento del Mercado de Stablecoins</h2>
     <div class="content-area">
-        <p style="text-align: center; margin-bottom: 30px;">Las stablecoins dominan el volumen transaccional frente a otras criptomonedas.</p>
-        <div class="canvas-wrapper">
-            <canvas id="chartDoughnutShare"></canvas>
-            <!-- Centro de la dona -->
-            <div style="position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none;">
-                <span style="font-size: 50px; font-weight: 800; color: #111827;">415 B</span>
-                <span style="font-size: 16px; color: #6b7280; font-weight: 700;">Volumen Total (USD)</span>
+        <div class="two-column" style="align-items: flex-start;">
+            <div class="canvas-wrapper" style="height: 380px;">
+                <canvas id="chartStablecoinCap"></canvas>
+            </div>
+            <div class="quote-box">
+                <p class="quote-text">
+                    Solo en 2025, la capitalización total de las stablecoins <strong>superó los USD 300 mil millones</strong> y sigue creciendo. 
+                </p>
+                <p style="margin-top: 15px; font-size: 18px;">
+                    Adopción masiva: los usuarios eligen stablecoins para transacciones cotidianas por su <strong>rapidez y menor costo.</strong>
+                </p>
             </div>
         </div>
+        <p class="source-text" style="font-size: 13px; color: #9ca3af; margin-top: 10px; text-align: left;">Fuente: defillama. Cifras en Billones de USD.</p>
     </div>
 </div>
 
-<!-- Slide 5: Validación Mercado -->
-<div class="slide-container" id="slide5">
-    <h2 class="slide-title">Validación de Mercado Global</h2>
+<!-- Diapositiva 4: Redes de Pago Globales -->
+<div class="slide-container">
+    <h2 class="slide-title">Redes de Pago Globales</h2>
     <div class="content-area">
-        <p style="margin-bottom: 30px;">En menos de 2 años la mayoría de los pagos se realizará sobre infraestructura Blockchain conectada al sector financiero tradicional.</p>
+        <p style="text-align: center; margin-bottom: 20px; font-weight: 600;">Volumen de transferencia anual (Trillones de USD).</p>
         <div class="canvas-wrapper">
             <canvas id="chartBarVisa"></canvas>
         </div>
-        <p class="source-text">Métrica: Volumen de transferencia en Trillones USD.</p>
-    </div>
-</div>
-
-<!-- Slide 6: Adopción Global 2024 -->
-<div class="slide-container" id="slide6">
-    <h2 class="slide-title">Adopción Global (Base 2024)</h2>
-    <div class="content-area">
-        <p style="margin-bottom: 20px;">América Latina se posicionaba firmemente como el <strong>segundo continente</strong> con mayor adopción de criptoactivos.</p>
-        <div class="canvas-wrapper small">
-            <canvas id="chartBarRegions24"></canvas>
+        <div style="margin-top: 30px; text-align: center;">
+            <p style="font-size: 18px; color: #374151;">Las redes de <strong>Stablecoins</strong> ya procesan volúmenes superiores a los de redes de tarjetas tradicionales.</p>
         </div>
     </div>
 </div>
 
-<!-- Slide 7: Valor Recibido LATAM 2024 -->
-<div class="slide-container" id="slide7">
-    <h2 class="slide-title">Valor Recibido en LATAM (2024)</h2>
-    <div class="content-area">
-        <p style="margin-bottom: 20px;">Argentina, Brasil y México lideraban el volumen transaccional regional antes del ciclo alcista.</p>
-        <div class="canvas-wrapper small">
-            <canvas id="chartBarLatam24"></canvas>
-        </div>
-        <p class="source-text">Métrica: Valor recibido por país en Billones de dólares (Billion USD).</p>
-    </div>
-</div>
-
-<!-- Slide 8: Crecimiento LATAM 2025 -->
-<div class="slide-container" id="slide8">
-    <h2 class="slide-title">El salto al 2025: LATAM crece <span class="text-orange">3x más rápido</span></h2>
-    <div class="content-area">
-        <p style="margin-bottom: 30px;">Durante 2025, América Latina registró más de <strong>$730 mil millones de dólares</strong> en volumen, con un crecimiento superior al 60% interanual, dejando atrás a Norteamérica y Europa.</p>
-        <div class="canvas-wrapper small">
-            <canvas id="chartBarGrowth25"></canvas>
-        </div>
-        <p class="source-text">Fuente: 2025 Geography of crypto report, Chainalysis. Tasa de crecimiento 2025 vs 2024.</p>
-    </div>
-</div>
-
-<!-- Slide 9: Evolución Usuarios (Líneas) -->
-<div class="slide-container" id="slide9">
-    <h2 class="slide-title">Evolución de usuarios activos (Apps Cripto)</h2>
-    <div class="content-area">
-        <p style="margin-bottom: 20px;">Solo tres de los 20 países con mayor adopción mundial están en la región: Brasil, Argentina y Venezuela. LATAM supera la tendencia de EE.UU. en los ciclos alcistas.</p>
-        <div class="canvas-wrapper small">
-            <canvas id="chartLineEvolution"></canvas>
-        </div>
-        <p class="source-text">América Latina (Naranja) vs Estados Unidos (Gris Punteado). Fuente: Sensor Tower.</p>
-    </div>
-</div>
-
-<!-- Slide 10: Industria LATAM 2025 -->
-<div class="slide-container" id="slide10">
-    <h2 class="slide-title">Estado de la industria en LATAM (2025)</h2>
-    <div class="content-area">
-        <p style="margin-bottom: 20px;">El mapa cambia: <strong>Perú superó a Chile</strong> en volumen transaccional y escaló un puesto frente al 2024, con un crecimiento mayor al 20%.</p>
-        <div class="canvas-wrapper small">
-            <canvas id="chartBarLatam25"></canvas>
-        </div>
-    </div>
-</div>
-
-<!-- Slide 11: Argentina N1 -->
-<div class="slide-container" id="slide11">
-    <h2 class="slide-title">Liderazgo en Adopción: <span class="text-orange">Argentina</span></h2>
+<!-- Diapositiva 5: Entidades Financieras (REORDENADA) -->
+<div class="slide-container">
+    <h2 class="slide-title">Entidades Financieras</h2>
     <div class="content-area">
         <div class="two-column">
-            <div style="text-align: center;">
-                <div class="number-highlight">4x</div>
-                <div class="number-label">Más usuarios cripto que en el ciclo alcista de 2021</div>
+            <div>
+                <h3>El imperativo de la adaptación</h3>
+                <p style="font-size: 24px; font-weight: 500; color: #111827; line-height: 1.4; margin-top: 20px;">
+                    Entidades Financieras que no se adapten, verán cómo sus clientes se van con competidores más rápidos y eficientes.
+                </p>
+                <div style="margin-top: 40px; padding: 25px; background: #f3f4f6; border-radius: 12px; border-left: 6px solid #111827;">
+                    <p style="font-size: 18px; color: #4b5563; margin: 0 italic;">
+                        "La digitalización ya no es opcional, es una cuestión de supervivencia competitiva."
+                    </p>
+                </div>
             </div>
             <div>
-                <h3>Líder Per Cápita</h3>
-                <p>Hay 4 veces más usuarios cripto en Argentina que en un país promedio de la región latinoamericana.</p>
-                <div style="background-color: #fff7ed; padding: 25px; border-radius: 12px; border-left: 4px solid #ff8c00; margin-top: 20px;">
-                    <p style="margin: 0; color: #111827; font-weight: 600;">Argentina lidera América Latina, capitalizando el <strong>12% de su población</strong> y concentrando más de un cuarto de toda la actividad regional.</p>
+                <p style="font-weight: 700; color: #111827; margin-bottom: 15px; font-size: 18px;">Referentes en el ecosistema:</p>
+                <div class="bank-logos-grid">
+                    <div class="bank-card"><div class="bank-icon-placeholder" style="background: #fbbf24; color: #111827;">S</div><span style="font-weight: 800; font-size: 16px;">SURED</span></div>
+                    <div class="bank-card"><div class="bank-icon-placeholder" style="background: #2563eb;">W</div><span style="font-weight: 700; font-size: 16px;">Wenia</span></div>
+                    <div class="bank-card"><div class="bank-icon-placeholder" style="background: #9333ea;">L</div><span style="font-weight: 700; font-size: 16px;">Lulo X</span></div>
+                    <div class="bank-card"><div class="bank-icon-placeholder" style="background: #111827;">R</div><span style="font-weight: 700; font-size: 16px;">Revolut</span></div>
+                    <div class="bank-card"><div class="bank-icon-placeholder" style="background: #0ea5e9;">I</div><span style="font-weight: 700; font-size: 16px;">ikigii</span></div>
+                    <div class="bank-card"><div class="bank-icon-placeholder" style="background: #dc2626;">RK</div><span style="font-weight: 700; font-size: 16px;">RAKBANK</span></div>
+                    <div class="bank-card"><div class="bank-icon-placeholder" style="background: #8b5cf6;">NU</div><span style="font-weight: 700; font-size: 16px;">Nubank</span></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Slide 12: Argentina Mercado -->
-<div class="slide-container" id="slide12">
-    <h2 class="slide-title">Dominancia de Mercado: <span class="text-orange">Argentina</span></h2>
+<!-- Diapositiva 6: América Latina: Líder en Crecimiento -->
+<div class="slide-container">
+    <h2 class="slide-title">América Latina: Líder en Crecimiento</h2>
     <div class="content-area">
+        <h3>Segundo continente con más adopción de Cripto Activos</h3>
+        <div class="canvas-wrapper">
+            <canvas id="chartContinents"></canvas>
+        </div>
+        <p class="source-text" style="font-size: 13px; color: #9ca3af; margin-top: 10px; text-align: left;">Fuente: Chainalysis Geography of crypto report.</p>
+    </div>
+</div>
+
+<!-- Diapositiva 7: COMPARACIÓN 2024 vrs 2025 -->
+<div class="slide-container">
+    <h2 class="slide-title">Aceleración Regional: 2024 vs 2025</h2>
+    <div class="content-area">
+        <div class="canvas-wrapper" style="height: 400px;">
+            <canvas id="chartGrowthComparison"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Diapositiva 8: VOLUMEN LATAM 2024 -->
+<div class="slide-container">
+    <h2 class="slide-title">Volumen Transaccional LATAM 2024</h2>
+    <div class="content-area">
+        <div class="canvas-wrapper">
+            <canvas id="chartLatam2024"></canvas>
+        </div>
+        <p class="source-text" style="font-size: 13px; color: #9ca3af; margin-top: 10px; text-align: left;">Métrica: Valor recibido en Billones de USD.</p>
+    </div>
+</div>
+
+<!-- Diapositiva 9: Detalle LATAM 2025 -->
+<div class="slide-container">
+    <h2 class="slide-title">Detalle Transaccional LATAM 2025</h2>
+    <div class="content-area">
+        <div class="canvas-wrapper">
+            <canvas id="chartLatamBar2025"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Diapositiva 10: Penetración Poblacional -->
+<div class="slide-container">
+    <h2 class="slide-title">Adopción Per Cápita en América Latina</h2>
+    <div class="content-area">
+        <div class="canvas-wrapper" style="height: 400px;">
+            <canvas id="chartUserPenetration"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Diapositiva 11: Cross-Border con USDT -->
+<div class="slide-container">
+    <h2 class="slide-title">Cross-Border con Stablecoins (USDT)</h2>
+    <div class="content-area">
+        <p style="font-size: 18px; margin-bottom: 25px; background: #fff7ed; padding: 15px; border-radius: 10px; border: 1px solid #ffed7422;">
+            Uso de <strong>USDT</strong> para transferir valor global sin depender de la red SWIFT tradicional.
+        </p>
         <div class="two-column">
-            <div>
-                <h3>Récord Histórico</h3>
-                <p>Se alcanzó un máximo histórico de descargas de apps cripto impulsado fuertemente por la integración de pagos con PIX y la interoperabilidad.</p>
+            <div class="cb-card">
+                <span class="cb-tag">Corporativo</span>
+                <h4><i class="fa-solid fa-building-columns"></i> 1. B2B Cross-Border</h4>
+                <ul>
+                    <li><strong>Liquidación T+0:</strong> En minutos.</li>
+                    <li><strong>Eficiencia:</strong> Sin bancos corresponsales.</li>
+                    <li><strong>FX:</strong> Menor spread cambiario.</li>
+                </ul>
             </div>
-            <div style="background-color: #f9fafb; border-radius: 16px; padding: 40px; text-align: center; border: 1px solid #e5e7eb;">
-                <h4 style="font-size: 24px; margin-bottom: 20px;">Cuota de Mercado</h4>
-                <div style="position: relative; width: 160px; height: 160px; margin: 0 auto; border-radius: 50%; background: conic-gradient(#ff8c00 0% 70%, #4b5563 70% 100%); display: flex; align-items: center; justify-content: center;">
-                    <div style="width: 100px; height: 100px; background-color: #f9fafb; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <span style="font-size: 28px; font-weight: 800;">70%</span>
-                    </div>
-                </div>
-                <p style="margin-top: 20px; font-weight: 700; color: #111827;">Lemon + Binance</p>
-                <p style="font-size: 16px; color: #6b7280;">Concentran a los usuarios activos</p>
+            <div class="cb-card">
+                <span class="cb-tag">Minorista</span>
+                <h4><i class="fa-solid fa-users-rays"></i> 2. Remesas P2P</h4>
+                <ul>
+                    <li><strong>Accesibilidad:</strong> Infraestructura 24/7.</li>
+                    <li><strong>Costos:</strong> Comisiones mínimas.</li>
+                    <li><strong>Flexibilidad:</strong> Salida a moneda local inmediata.</li>
+                </ul>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Slide 13: Peru -->
-<div class="slide-container" id="slide13">
-    <h2 class="slide-title">Expansión Sostenida: <span class="text-orange">Perú</span></h2>
+<!-- Diapositiva 12: RWA Intro -->
+<div class="slide-container">
+    <h2 class="slide-title">Activos del Mundo Real (RWA)</h2>
     <div class="content-area">
-        <div class="two-column">
-            <div>
-                <div class="number-highlight" style="font-size: 90px;">2.9M</div>
-                <div class="number-label" style="margin-bottom: 30px;">De descargas de apps en 2025</div>
-                
-                <div class="number-highlight" style="font-size: 90px;">x2</div>
-                <div class="number-label">En cantidad de usuarios vs 2024</div>
-            </div>
-            <div style="background-color: #f9fafb; border-radius: 16px; padding: 40px; border: 1px solid #e5e7eb;">
-                <h4 style="font-size: 24px; margin-bottom: 20px;">Interoperabilidad y Dominio</h4>
-                <p>Gracias a la consolidación de políticas interoperables, se duplicaron las transferencias entre bancos y billeteras.</p>
-                <div style="display: flex; align-items: center; gap: 20px; margin-top: 30px;">
-                    <div style="position: relative; width: 100px; height: 100px; flex-shrink: 0; border-radius: 50%; background: conic-gradient(#ff8c00 0% 40%, #e5e7eb 40% 100%); display: flex; align-items: center; justify-content: center;">
-                        <div style="width: 60px; height: 60px; background-color: #f9fafb; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                            <span style="font-size: 20px; font-weight: 800;">40%</span>
-                        </div>
-                    </div>
-                    <p style="margin: 0; font-weight: 700;">Lemon representa el 40% del mercado. (1 de cada 2 descargas).</p>
-                </div>
-            </div>
+        <div style="background-color: #f9fafb; padding: 30px; border-radius: 12px; border: 1px solid #e5e7eb;">
+            <h3 class="text-orange">$2.1B+ en Tesoro Tokenizado</h3>
+            <p>La digitalización de activos tradicionales (bonos, oro, real estate) permite liquidez inmediata y transparencia on-chain.</p>
         </div>
     </div>
 </div>
 
-<!-- Slide 14: RWA Contexto -->
-<div class="slide-container" id="slide14">
-    <h2 class="slide-title">El auge de las acciones tokenizadas (RWA)</h2>
+<!-- Diapositiva 13: RWA Volumen -->
+<div class="slide-container">
+    <h2 class="slide-title">Crecimiento de Volumen RWA</h2>
     <div class="content-area">
-        <div class="pill" style="margin-bottom: 30px;">Conclusiones del proyecto MIT Sloan G-LAB 2026</div>
-        <div class="two-column">
-            <div>
-                <p>En solo un año, la tokenización de activos del mundo real (RWAs) pasó de ser una promesa a mover miles de millones de dólares. Crypto nos acostumbró a mover dinero globalmente 24/7. <strong>¿Por qué no hacer lo mismo con el mercado de acciones?</strong></p>
-                <p>Las acciones tokenizadas son representaciones digitales de activos tradicionales en Blockchain, respaldadas 1 a 1.</p>
-            </div>
-            <div>
-                <p>En 2025 pasaron de ser un experimento de nicho a un <strong>producto de inversión global</strong> respaldado por reguladores.</p>
-                <p>Proveedores como Ondo y Backed recibieron aprobación en la UE, y Dinari en EE.UU., sentando una base regulatoria sólida para la expansión masiva de esta tecnología.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Slide 15: RWA Volumen -->
-<div class="slide-container" id="slide15">
-    <h2 class="slide-title">Explosión de volumen: Acciones Tokenizadas</h2>
-    <div class="content-area">
-        <p style="margin-bottom: 10px;">Se alcanzaron <strong>$6,400 millones de dólares</strong> en volumen de transferencias, un crecimiento del <span class="text-orange font-bold">+22,503%</span>.</p>
-        <p style="margin-bottom: 30px;">El Valor Total Bloqueado (TVL) llegó a los $742 millones (+155% vs año anterior).</p>
-        <div class="canvas-wrapper small">
+        <div class="canvas-wrapper">
             <canvas id="chartAreaRWA"></canvas>
         </div>
+        <p class="source-text" style="font-size: 13px; color: #9ca3af; margin-top: 10px; text-align: left;">Métrica: Capitalización de mercado en Millones de USD.</p>
     </div>
 </div>
 
-<!-- Slide 16: Casos de Uso y Polymarket -->
-<div class="slide-container" id="slide16">
-    <h2 class="slide-title">Productos globales sobre stablecoins</h2>
-    <div class="content-area">
-        <div class="two-column tiled">
-            <div>
-                <h3 class="text-orange">Transaccionalidad (Casos Reales)</h3>
-                <ul>
-                    <li><strong>Pagos con PIX en dólares:</strong> El usuario escanea un QR en Brasil y paga con pesos usando dólares digitales (USDC).</li>
-                    <li><strong>Pagos con cualquier QR en Argentina:</strong> El usuario paga y recibe rendimientos (cashback) en Bitcoin.</li>
-                    <li><strong>Tokenización de valores:</strong> La CNV habilitó un marco (sandbox) para negociar CE-DEARs en Blockchain.</li>
-                </ul>
-            </div>
-            <div>
-                <h3 class="text-orange">Mercados de Predicción</h3>
-                <p style="font-size: 16px; margin-bottom: 15px;">Plataformas donde miles de personas intercambian tokens apostando a resultados futuros (elecciones, inflación).</p>
-                <ul>
-                    <li><strong>La precisión colectiva:</strong> "La especulación se transforma en un incentivo para revelar información verdadera."</li>
-                    <li><strong>El caso Polymarket:</strong> Alcanzó un <strong>95.2% de precisión</strong> en 2025, superando a las encuestas tradicionales, procesando más de $20 mil millones.</li>
-                </ul>
-            </div>
-        </div>
+<!-- Diapositiva 14: Cierre -->
+<div class="slide-container">
+    <div class="content-area" style="text-align: center;">
+        <h2 style="font-size: 50px;">Hacia un Futuro<br><span class="text-orange">Totalmente Conectado</span></h2>
+        <p style="max-width: 700px; margin: 40px auto; font-size: 22px;">La convergencia de las finanzas tradicionales y la infraestructura blockchain ya no es una promesa, es la base del nuevo sistema financiero.</p>
     </div>
 </div>
 
-<!-- Slide 17: Evento y Cierre -->
-<div class="slide-container" id="slide17" style="padding: 0;">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; width: 100%; height: 100%;">
-        <div style="padding: 60px 70px; display: flex; flex-direction: column; justify-content: center; background-color: #fff;">
-            <div class="pill">Evento Oficial</div>
-            <h2 style="font-size: 55px; margin-bottom: 20px;">Blockchain <span class="text-orange">Jungle</span></h2>
-            <h3 style="color: #4b5563; font-weight: 600; font-size: 24px;">La comunidad de comunidades llega a Costa Rica.</h3>
-            
-            <p style="margin-top: 30px; font-size: 24px; color: #111827;"><strong>08 y 09 de noviembre</strong></p>
-            <p style="font-style: italic; color: #6b7280; margin-top: 20px; font-size: 18px;">"Latinoamérica se conecta. Circolo expande su frecuencia."</p>
-            
-            <div style="margin-top: 40px; padding-top: 30px; border-top: 1px solid #e5e7eb;">
-                <p style="margin: 0; font-weight: 800; font-size: 24px; color: #111827;">Camilo Romero</p>
-                <p style="margin: 0; color: #ff8c00; font-weight: 600;">Speaker | Circolo</p>
-            </div>
-        </div>
-        <div style="background-image: url('http://googleusercontent.com/image_collection/image_retrieval/2091111764294435802'); background-size: cover; background-position: center;">
-        </div>
-    </div>
-</div>
-
-<!-- ================= SCRIPT GRÁFICAS (CHART.JS) ================= -->
 <script>
+    Chart.register(ChartDataLabels);
     Chart.defaults.font.family = "'Inter', sans-serif";
     Chart.defaults.color = '#6b7280';
-    const orangeColor = '#ff8c00';
-    const darkColor = '#111827';
-    const greyColor = '#d1d5db';
 
     document.addEventListener('DOMContentLoaded', function() {
         
-        // S4: Dona Cuota de Mercado
-        new Chart(document.getElementById('chartDoughnutShare'), {
-            type: 'doughnut',
+        // S3: MARKET CAP STABLECOINS
+        new Chart(document.getElementById('chartStablecoinCap'), {
+            type: 'line',
             data: {
-                labels: ['Stablecoins', 'Otras Criptos'],
-                datasets: [{ data: [66.3, 33.7], backgroundColor: [orangeColor, '#e5e7eb'], borderWidth: 0 }]
+                labels: ['2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026'],
+                datasets: [{ 
+                    data: [5, 8, 20, 110, 180, 135, 160, 305, 315], 
+                    borderColor: '#ff8c00', 
+                    backgroundColor: 'rgba(255, 140, 0, 0.1)',
+                    fill: true, 
+                    tension: 0.4,
+                    pointRadius: (ctx) => ctx.dataIndex === 7 ? 8 : 0,
+                    pointBackgroundColor: '#ff8c00'
+                }]
             },
-            options: { cutout: '75%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, font: {size: 16, weight: 'bold'} } } }, maintainAspectRatio: false }
+            options: {
+                plugins: { 
+                    legend: { display: false },
+                    datalabels: { 
+                        display: (ctx) => ctx.dataIndex === 7,
+                        align: 'top',
+                        color: '#111827',
+                        font: { weight: 'bold', size: 16 },
+                        formatter: (v) => '$' + v + 'B'
+                    }
+                },
+                scales: { 
+                    y: { beginAtZero: true, max: 350, ticks: { callback: (v) => '$' + v + 'B' } }, 
+                    x: { grid: { display: false } } 
+                },
+                maintainAspectRatio: false
+            }
         });
 
-        // S5: Bar Visa
+        // S4: Visa vs Stablecoins
         new Chart(document.getElementById('chartBarVisa'), {
             type: 'bar',
             data: {
-                labels: ['Stablecoins', 'VISA', 'Otros'],
-                datasets: [{ data: [27.6, 13.2, 9.76], backgroundColor: [orangeColor, darkColor, greyColor], borderRadius: 4 }]
+                labels: ['Stablecoins', 'VISA', 'Mastercard'],
+                datasets: [{ data: [27.6, 13.2, 9.8], backgroundColor: ['#ff8c00', '#111827', '#d1d5db'], borderRadius: 4 }]
             },
-            options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { display: false, grid: {display: false} }, y: { grid: {display: false}, ticks: { font: {size: 18, weight: 'bold'}, color: darkColor } } }, maintainAspectRatio: false }
+            options: { indexAxis: 'y', plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'right', font: { weight: 'bold' }, formatter: (v) => v + ' T' } }, scales: { x: { display: false }, y: { grid: { display: false }, ticks: { font: { weight: 'bold', size: 16 } } } }, maintainAspectRatio: false }
         });
 
-        // S6: Regiones 2024
-        new Chart(document.getElementById('chartBarRegions24'), {
+        // S6: Continentes
+        new Chart(document.getElementById('chartContinents'), {
             type: 'bar',
             data: {
-                labels: ['África subsahariana', 'América Latina', 'Europa oriental', 'Europa occidental', 'Asia oriental'],
-                datasets: [{ data: [48, 38, 35, 23, 20], backgroundColor: [darkColor, orangeColor, darkColor, darkColor, darkColor], borderRadius: 4 }]
+                labels: ['África Subs.', 'América Latina', 'Europa Oriental', 'Europa Occ.', 'Asia Oriental', 'Norte América'],
+                datasets: [{ data: [47, 38, 33, 22, 20, 16], backgroundColor: (ctx) => ctx.index === 1 ? '#2E67F8' : '#111827', borderRadius: 4 }]
             },
-            options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { grid: {display: false}, ticks: { font: {size: 14, weight: 'bold'}, color: darkColor } } }, maintainAspectRatio: false }
+            options: { indexAxis: 'y', plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'right', color: '#111827', font: { weight: 'bold' }, formatter: (v) => v + '%' } }, scales: { x: { display: false, max: 55 }, y: { grid: { display: false }, ticks: { font: { weight: 'bold', size: 14 } } } }, maintainAspectRatio: false }
         });
 
-        // S7: LATAM 2024
-        new Chart(document.getElementById('chartBarLatam24'), {
+        // S7: COMPARACIÓN
+        new Chart(document.getElementById('chartGrowthComparison'), {
+            type: 'bar',
+            data: {
+                labels: ['APAC', 'Latin America', 'Sub-Saharan Africa', 'North America', 'Europe', 'MENA'],
+                datasets: [
+                    { label: 'Crecimiento Reciente', data: [68, 62, 50, 28, 40, 31], backgroundColor: '#ff8c00', borderRadius: 4 },
+                    { label: 'Crecimiento Anterior', data: [38, 52, 42, 48, 55, 46], backgroundColor: '#d1d5db', borderRadius: 4 }
+                ]
+            },
+            options: {
+                plugins: {
+                    legend: { position: 'top', labels: { usePointStyle: true, font: { weight: 'bold' } } },
+                    datalabels: { anchor: 'end', align: 'top', font: { weight: 'bold', size: 10 }, formatter: (v) => v + '%' }
+                },
+                scales: { y: { beginAtZero: true, max: 85, ticks: { display: false } }, x: { grid: { display: false }, ticks: { font: { weight: 'bold' } } } },
+                maintainAspectRatio: false
+            }
+        });
+
+        // S8: LATAM 2024
+        new Chart(document.getElementById('chartLatam2024'), {
             type: 'bar',
             data: {
                 labels: ['Argentina', 'Brasil', 'México', 'Venezuela', 'Colombia', 'Chile', 'Perú'],
-                datasets: [{ data: [85, 70, 55, 50, 30, 10, 9], backgroundColor: [darkColor, darkColor, darkColor, darkColor, orangeColor, greyColor, greyColor], borderRadius: 4 }]
+                datasets: [{ data: [85, 70, 55, 50, 32, 30, 10], backgroundColor: (ctx) => ctx.index === 4 ? '#2E67F8' : '#111827', borderRadius: 4 }]
             },
-            options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: {display: false}, ticks: { font: {size: 14, weight: 'bold'}, color: darkColor } } }, maintainAspectRatio: false }
+            options: { plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'top', color: '#111827', font: { weight: 'bold' }, formatter: (v) => '$' + v + 'B' } }, scales: { y: { display: false }, x: { grid: { display: false } } }, maintainAspectRatio: false }
         });
 
-        // S8: Crecimiento 2025
-        new Chart(document.getElementById('chartBarGrowth25'), {
+        // S9: LATAM 2025
+        new Chart(document.getElementById('chartLatamBar2025'), {
             type: 'bar',
             data: {
-                labels: ['APAC', 'América Latina', 'África Subs.', 'Norteamérica', 'Europa'],
-                datasets: [{ data: [68, 62, 52, 48, 42], backgroundColor: [greyColor, orangeColor, greyColor, greyColor, greyColor], borderRadius: 4 }]
+                labels: ['Bra', 'Arg', 'Mex', 'Ven', 'Col', 'Per', 'Chi', 'Bol', 'Ecu', 'PR'],
+                datasets: [{ data: [320, 95, 71, 48, 45, 30, 24, 15, 12, 10], backgroundColor: '#ff8c00', borderRadius: 4 }]
             },
-            options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: {display: false}, ticks: { font: {size: 14, weight: 'bold'}, color: darkColor } } }, maintainAspectRatio: false }
+            options: { plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'top', font: { weight: 'bold' }, formatter: (v) => '$' + v + 'B' } }, scales: { y: { display: false }, x: { grid: { display: false } } }, maintainAspectRatio: false }
         });
 
-        // S9: Line Evolución
-        new Chart(document.getElementById('chartLineEvolution'), {
-            type: 'line',
+        // S10: Penetración
+        new Chart(document.getElementById('chartUserPenetration'), {
+            type: 'bar',
             data: {
-                labels: ['2021', '2022', '2023', '2024', '2025', '2026'],
+                labels: ['Arg', 'Ven', 'Per', 'Bra', 'Col', 'Uru', 'Chi', 'Mex'],
                 datasets: [
-                    { label: 'América Latina', data: [3, 10, 12, 14, 22, 18], borderColor: orangeColor, backgroundColor: 'rgba(255, 140, 0, 0.1)', borderWidth: 4, fill: true, tension: 0.3 },
-                    { label: 'Estados Unidos', data: [11, 26, 17, 19, 29, 21], borderColor: '#9ca3af', borderWidth: 2, fill: false, tension: 0.3 }
+                    { label: 'Nivel 1', data: [7.5, 3.8, 0.9, 1.8, 1.9, 1.7, 1.4, 0.8], backgroundColor: '#94a3b8' },
+                    { label: 'Nivel 2', data: [11.0, 5.5, 1.5, 2.3, 2.1, 1.9, 1.7, 1.1], backgroundColor: '#fdba74' },
+                    { label: 'Nivel 3', data: [12.2, 7.5, 3.5, 3.0, 2.8, 2.5, 2.2, 1.2], backgroundColor: '#ff8c00' }
                 ]
             },
-            options: { plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, font: {size: 14, weight: 'bold'} } } }, scales: { y: { display: false }, x: { grid: {display: false} } }, maintainAspectRatio: false }
+            options: { plugins: { legend: { position: 'top' }, datalabels: { anchor: 'end', align: 'top', font: { size: 9, weight: 'bold' }, formatter: (v) => v + '%' } }, scales: { y: { beginAtZero: true, max: 15 }, x: { grid: { display: false } } }, maintainAspectRatio: false }
         });
 
-        // S10: LATAM 2025
-        new Chart(document.getElementById('chartBarLatam25'), {
-            type: 'bar',
-            data: {
-                labels: ['Brasil', 'Argentina', 'México', 'Venezuela', 'Colombia', 'Perú', 'Chile'],
-                datasets: [{ data: [310, 95, 70, 48, 45, 30, 20], backgroundColor: [orangeColor, orangeColor, orangeColor, orangeColor, orangeColor, darkColor, greyColor], borderRadius: 4 }]
-            },
-            options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: {display: false}, ticks: { font: {size: 14, weight: 'bold'}, color: darkColor } } }, maintainAspectRatio: false }
-        });
-
-        // S15: Area RWA
+        // S13: RWA Volumen
         new Chart(document.getElementById('chartAreaRWA'), {
             type: 'line',
             data: {
-                labels: ['Enero', 'Marzo', 'Mayo', 'Julio', 'Septiembre', 'Noviembre', 'Diciembre'],
-                datasets: [{ data: [10, 15, 20, 100, 400, 500, 640], borderColor: orangeColor, backgroundColor: 'rgba(255, 140, 0, 0.2)', borderWidth: 4, fill: true, tension: 0.1, pointRadius: 0 }]
+                labels: ['Q1 24', 'Q2 24', 'Q3 24', 'Q4 24', 'Q1 25', 'Q2 25', 'Q3 25'],
+                datasets: [{ data: [100, 300, 800, 2100, 3900, 5200, 6400], borderColor: '#ff8c00', backgroundColor: 'rgba(255, 140, 0, 0.1)', fill: true, tension: 0.4 }]
             },
-            options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: {display: false}, ticks: { font: {size: 14, weight: 'bold'} } } }, maintainAspectRatio: false }
+            options: { plugins: { legend: { display: false }, datalabels: { align: 'top', formatter: (v) => '$' + v + 'M' } }, scales: { y: { display: false }, x: { grid: { display: false } } }, maintainAspectRatio: false }
         });
     });
 </script>
